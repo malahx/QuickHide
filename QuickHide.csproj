@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8ECE3013-6315-45CC-8049-FA460B008E77}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>QuickHide</RootNamespace>
+    <AssemblyName>QuickHide</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <Description>QuickHide is a plugin which adds the possibility to hide all mods from the stock toolbar.
+</Description>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp /home/malah/Code/QuickHide/bin/QuickHide.dll /home/malah/Code/QuickHide/GameData/QuickHide/Plugins/" />
+        <Command type="AfterBuild" command="cp /home/malah/Code/QuickHide/README.md /home/malah/Code/QuickHide/GameData/QuickHide/" />
+        <Command type="AfterBuild" command="cp /home/malah/Code/QuickHide/COPYING /home/malah/Code/QuickHide/GameData/QuickHide/" />
+        <Command type="AfterBuild" command="cp /home/malah/Code/QuickHide/QuickHide.version /home/malah/Code/QuickHide/GameData/QuickHide/QuickHide.version" />
+        <Command type="AfterBuild" command="cp -rf /home/malah/Code/QuickHide/GameData/QuickHide/ &quot;/home/malah/.local/share/Steam/SteamApps/common/Kerbal Space Program/GameData/&quot;" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-UnityScript">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-UnityScript.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-UnityScript-firstpass">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-UnityScript-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityScript.Lang">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityScript.Lang.dll</HintPath>
+    </Reference>
+    <Reference Include="aaa_Toolbar">
+      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\GameData\000_Toolbar\Toolbar.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickHide.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="COPYING" />
+    <None Include="QuickHide.version" />
+    <None Include="README.md" />
+    <None Include="GameData\QuickHide\COPYING" />
+    <None Include="GameData\QuickHide\QuickHide.version" />
+    <None Include="GameData\QuickHide\README.md" />
+    <None Include="GameData\QuickHide\Plugins\QuickHide.dll" />
+    <None Include="GameData\QuickHide\Textures\BlizzyToolBar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameData\QuickHide\PLuginData\" />
+    <Folder Include="GameData\QuickHide\PLuginData\QuickHide\" />
+  </ItemGroup>
+</Project>
