@@ -76,6 +76,7 @@
     <None Include="GameData\QuickHide\README.md" />
     <None Include="GameData\QuickHide\Plugins\QuickHide.dll" />
     <None Include="GameData\QuickHide\Textures\BlizzyToolBar.png" />
+    <None Include="BlizzyToolBar.xcf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GameData\QuickHide\PLuginData\" />
