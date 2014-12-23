@@ -1,5 +1,5 @@
 ﻿#### QuickHide
-#### A plugin for Kerbal Space Program 0.25.0
+#### A plugin for Kerbal Space Program 0.90.0
 #### Copyright 2014 Malah
 
 This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,11 @@ This mod require the Toolbar mod to work.
 Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
+
+v1.01 - 2014.12.23
+- Fix: Some minor fixes.
+- Update Toolbar to 1.7.8
+- Update to 0.90
 
 v1.00 - 2014.12.08
 - First release.

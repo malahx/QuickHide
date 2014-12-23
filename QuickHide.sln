@@ -17,6 +17,6 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = QuickHide.csproj
 		description = @QuickHide is a plugin which adds the possibility to hide all mods from the stock toolbar.\n
-		version = 1.0
+		version = 1.01
 	EndGlobalSection
 EndGlobal

@@ -23,10 +23,10 @@ using Toolbar;
 namespace QuickHide {
 	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
 	public class QuickHide : MonoBehaviour {
-		public static string VERSION = "1.00";
+		public static string VERSION = "1.01";
 		public static string MOD = "QuickHide";
 		private static bool isdebug = true;
-		private static string Path_settings = KSPUtil.ApplicationRootPath + "GameData/QuickHide/PLuginData/QuickHide/Config.txt";
+		private static string Path_settings = KSPUtil.ApplicationRootPath + "GameData/QuickHide/PluginData/QuickHide/Config.txt";
 
 		[KSPField(isPersistant = true)]
 		public static bool isHide;
@@ -150,7 +150,7 @@ namespace QuickHide {
 		private static void Save() {
 			if (isHide) {
 				ConfigNode _temp = new ConfigNode ();
-				_temp.AddValue ("isHide", isHide);
+				_temp.AddValue ("isHide", isHide.ToString());
 				_temp.Save (Path_settings);
 			} else {
 				if (File.Exists (Path_settings)) {
