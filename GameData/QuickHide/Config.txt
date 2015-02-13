@@ -1,0 +1,4 @@
+﻿isHide = false
+MouseHide = true
+BlizzyToolBar = true
+TimeToKeep = 1

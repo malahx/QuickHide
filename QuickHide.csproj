@@ -36,9 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="aaa_Toolbar">
-      <HintPath>Toolbar-1.7.8\GameData\000_Toolbar\Toolbar.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -48,7 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickHide.cs" />
+    <Compile Include="QH.cs" />
+    <Compile Include="QH_Settings.cs" />
+    <Compile Include="QH_Hide.cs" />
+    <Compile Include="ToolbarWrapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,10 +61,6 @@
     <None Include="GameData\QuickHide\Plugins\QuickHide.dll" />
     <None Include="GameData\QuickHide\Textures\BlizzyToolBar.png" />
     <None Include="BlizzyToolBar.xcf" />
-    <None Include="GameData\QuickHide\PluginData\QuickHide\Config.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GameData\QuickHide\PluginData\" />
-    <Folder Include="GameData\QuickHide\PluginData\QuickHide\" />
+    <None Include="GameData\QuickHide\Config.txt" />
   </ItemGroup>
 </Project>
