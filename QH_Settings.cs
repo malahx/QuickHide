@@ -1,5 +1,5 @@
 ﻿/* 
-QuickIVA
+QuickHide
 Copyright 2015 Malah
 
 This program is free software: you can redistribute it and/or modify
@@ -17,35 +17,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 namespace QuickHide {
-
 	public class QSettings : MonoBehaviour {
 
 		public readonly static QSettings Instance = new QSettings();
 
-		internal string File_settings = KSPUtil.ApplicationRootPath + "GameData/" + Quick.MOD + "/Config.txt";
+		internal static string FileConfig = KSPUtil.ApplicationRootPath + "GameData/" + QuickHide.MOD + "/Config.txt";
 
-		[Persistent]
-		public bool isHide = false;
-		[Persistent]
-		public bool MouseHide = true;
-		[Persistent]
-		public bool BlizzyToolBar = true;
-		[Persistent]
-		public int TimeToKeep = 1;
+		[Persistent] public bool isHidden = false;
+		[Persistent] public bool MouseHide = true;
+		[Persistent] public int TimeToKeep = 2;
+		[Persistent] public bool StockToolBar = true;
+		[Persistent] public bool BlizzyToolBar = true;
+		[Persistent] public bool StockToolBar_ModApp = true;
+		[Persistent] public List<string> CanPin = new List<string>(); 
+		[Persistent] public List<string> CanHide = new List<string>();
+		[Persistent] public List<string> CanSetFalse = new List<string>();
+		[Persistent] public List<string> ModHasFirstConfig = new List<string>();
 
 		public void Save() {
 			ConfigNode _temp = ConfigNode.CreateConfigFromObject(this, new ConfigNode());
-			_temp.Save(File_settings);
+			_temp.Save(FileConfig);
+			QuickHide.Log ("Settings Saved");
 		}
 		public void Load() {
-			if (File.Exists (File_settings)) {
-				ConfigNode _temp = ConfigNode.Load (File_settings);
-				ConfigNode.LoadObjectFromConfig (this, _temp);
-				Quick.Log ("Load");
+			if (File.Exists (FileConfig)) {
+				try {
+					ConfigNode _temp = ConfigNode.Load (FileConfig);
+					ConfigNode.LoadObjectFromConfig (this, _temp);
+				} catch {
+					Save ();
+				}
+				QuickHide.Log ("Settings Loaded");
 			} else {
 				Save ();
 			}

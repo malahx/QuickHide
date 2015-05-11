@@ -7,8 +7,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QuickHide</RootNamespace>
     <AssemblyName>QuickHide</AssemblyName>
-    <ReleaseVersion>1.01</ReleaseVersion>
-    <Description>QuickHide is a plugin which adds the possibility to hide all mods from the stock toolbar.
+    <ReleaseVersion>3.00</ReleaseVersion>
+    <Description>#### QuickHide
+#### A plugin for Kerbal Space Program 1.0.2
+#### Copyright 2015 Malah
 </Description>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -21,6 +23,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="./install.sh" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -37,18 +44,23 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\lib\1.02\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\.steam\steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\1.02\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QH.cs" />
-    <Compile Include="QH_Settings.cs" />
-    <Compile Include="QH_Hide.cs" />
     <Compile Include="ToolbarWrapper.cs" />
+    <Compile Include="QH_Hide.cs" />
+    <Compile Include="QH.cs" />
+    <Compile Include="QH_Quick.cs" />
+    <Compile Include="QH_Settings.cs" />
+    <Compile Include="QH_GUI.cs" />
+    <Compile Include="QH_ToolbarBlizzy.cs" />
+    <Compile Include="QH_ToolbarStock.cs" />
+    <Compile Include="QH_Mods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -59,8 +71,15 @@
     <None Include="GameData\QuickHide\QuickHide.version" />
     <None Include="GameData\QuickHide\README.md" />
     <None Include="GameData\QuickHide\Plugins\QuickHide.dll" />
-    <None Include="GameData\QuickHide\Textures\BlizzyToolBar.png" />
-    <None Include="BlizzyToolBar.xcf" />
-    <None Include="GameData\QuickHide\Config.txt" />
+    <None Include="Hide.xcf" />
+    <None Include="GameData\QuickHide\Textures\BlizzyToolBar.dds" />
+    <None Include="GameData\QuickHide\Textures\BlizzyToolBar_Hide.dds" />
+    <None Include="GameData\QuickHide\Textures\BlizzyToolBar_Show.dds" />
+    <None Include="GameData\QuickHide\Textures\StockToolBar.dds" />
+    <None Include="GameData\QuickHide\Textures\StockToolBar_Hide.dds" />
+    <None Include="GameData\QuickHide\Textures\StockToolBar_Show.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameData\QuickHide\Textures\" />
   </ItemGroup>
 </Project>

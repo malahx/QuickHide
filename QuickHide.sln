@@ -15,8 +15,7 @@ Global
 		{8ECE3013-6315-45CC-8049-FA460B008E77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = QuickHide.csproj
-		description = @QuickHide is a plugin which adds the possibility to hide all mods from the stock toolbar.\n
-		version = 1.01
+		description = @#### QuickHide\n#### A plugin for Kerbal Space Program 1.0.2\n#### Copyright 2015 Malah
+		version = 3.00
 	EndGlobalSection
 EndGlobal

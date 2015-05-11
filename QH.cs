@@ -17,58 +17,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.IO;
 using UnityEngine;
 
 namespace QuickHide {
 
-	public class Quick : MonoBehaviour {
-
-		public readonly static string VERSION = "2.00";
-		public readonly static string MOD = "QuickHide";
-		private static bool isdebug = true;
-
-		internal static void Log(string msg) {
-			if (isdebug) {
-				Debug.Log (MOD + "(" + VERSION + "): " + msg);
-			}
-		}
-		internal static void Warning(string msg) {
-			if (isdebug) {
-				Debug.LogWarning (MOD + "(" + VERSION + "): " + msg);
-			}
-		}
-	}
-
 	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
-	public class QuickHide : QHide {
+	public partial class QuickHide : MonoBehaviour {
 
-		private string BlizzyToolBar_TexturePath = MOD + "/Textures/BlizzyToolBar";
-		private IButton BlizzyToolBar_Button;
-		private bool isBlizzyToolBar {
-			get {
-				return ToolbarManager.ToolbarAvailable && ToolbarManager.Instance != null;
-			}
-		}
+		public static QuickHide Instance;
+		[KSPField(isPersistant = true)] internal static QBlizzyToolbar BlizzyToolbar;
 
-		private void BlizzyToolBar_Init() {
-			if (isBlizzyToolBar && BlizzyToolBar_Button == null) {
-				BlizzyToolBar_Button = ToolbarManager.Instance.add(MOD, MOD);
-				BlizzyToolBar_Button.TexturePath = BlizzyToolBar_TexturePath;
-				BlizzyToolBar_Button.ToolTip = MOD;
-				BlizzyToolBar_Button.OnClick += (e) => HideToggle();
-			}
-		}
-
-		private void BlizzyToolBar_Destroy() {
-			if (isBlizzyToolBar && BlizzyToolBar_Button != null) {
-				BlizzyToolBar_Button.Destroy ();
-			}
-		}
-			
 		private void Awake() {
-			QSettings.Instance.Load ();
-			GameEvents.onGUIApplicationLauncherReady.Add (OnGUIApplicationLauncherReady);
+			if (Instance != null || !HighLogic.LoadedSceneIsGame) {
+				Destroy (this);
+				return;
+			}
+			Instance = this;
+			if (BlizzyToolbar == null) BlizzyToolbar = new QBlizzyToolbar ();
 			GameEvents.onShowUI.Add (OnShowUI);
 			GameEvents.onHideUI.Add (OnHideUI);
 			GameEvents.onGUIAdministrationFacilitySpawn.Add (OnHideUI);
@@ -79,12 +44,21 @@ namespace QuickHide {
 			GameEvents.onGUIMissionControlDespawn.Add (OnShowUI);
 			GameEvents.onGUIRnDComplexDespawn.Add (OnShowUI);
 			GameEvents.onGUIAstronautComplexDespawn.Add (OnShowUI);
-			if (QSettings.Instance.BlizzyToolBar && HighLogic.LoadedSceneIsGame) {
-				BlizzyToolBar_Init ();
-			}
+			GameEvents.onGameSceneLoadRequested.Add (OnGameSceneLoadRequested);
 		}
+
+		private void Start() {
+			QSettings.Instance.Load ();
+			QGUI.Init ();
+			BlizzyToolbar.Start ();
+			StartCoroutine (AfterAllAppAdded ());
+			StartEach ();
+		}
+
 		private void OnDestroy() {
-			GameEvents.onGUIApplicationLauncherReady.Remove (OnGUIApplicationLauncherReady);
+			if (BlizzyToolbar != null) {
+				BlizzyToolbar.OnDestroy ();
+			}
 			GameEvents.onShowUI.Remove (OnShowUI);
 			GameEvents.onHideUI.Remove (OnHideUI);
 			GameEvents.onGUIAdministrationFacilitySpawn.Remove (OnHideUI);
@@ -95,41 +69,29 @@ namespace QuickHide {
 			GameEvents.onGUIMissionControlDespawn.Remove (OnShowUI);
 			GameEvents.onGUIRnDComplexDespawn.Remove (OnShowUI);
 			GameEvents.onGUIAstronautComplexDespawn.Remove (OnShowUI);
-			BlizzyToolBar_Destroy ();
-		}
-
-		private void OnGUIApplicationLauncherReady() {
-			if (QSettings.Instance.isHide) {
-				HideMods (QSettings.Instance.isHide);
-			}
-			if (QSettings.Instance.MouseHide) {
-				Shown = true;
-			}
+			GameEvents.onGameSceneLoadRequested.Remove (OnGameSceneLoadRequested);
+			StopEach ();
 		}
 
 		private void OnShowUI() {
-			if (QSettings.Instance.MouseHide && ForceHide) {
-				ForceHide = false;
-				Hide (false);
+			if (ApplicationLauncher.Instance != null) {
+				Date = DateTime.Now;
+				First = true;
 			}
 		}
 
 		private void OnHideUI() {
-			if (HighLogic.LoadedSceneIsGame) {
-				if (ApplicationLauncher.Instance != null) {
-					if (QSettings.Instance.MouseHide) {
-						ForceHide = true;
-					}
-				}
+			if (ApplicationLauncher.Instance != null) {
+				First = false;
 			}
 		}
 
-		private void FixedUpdate() {
-			if (HighLogic.LoadedSceneIsGame) {
-				if (ApplicationLauncher.Instance != null) {
-					HideUpdate ();
-				}
-			}
+		private void OnGUI() {
+			QGUI.OnGUI ();
+		}
+
+		protected void OnGameSceneLoadRequested(GameScenes gameScene) {
+			First = false;
 		}
 	}
 }
