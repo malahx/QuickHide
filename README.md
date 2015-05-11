@@ -20,6 +20,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 QuickHide is a plugin which adds the possibility to hide the stock toolbar and the mods of the stock toolbar.
 
+#### How does it work?
+
+You have two solutions to use QuickHide:
+* with the mouse: Put your mouse where is the stock toolbar and it will be shown,
+* with the Buttons to hide/show the mods of the stock toolbar.
+
 #### How to install it?
 
 Unzip all files. Put the QuickHide folder in your KSP/GameData folder.
