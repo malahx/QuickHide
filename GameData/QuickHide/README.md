@@ -41,7 +41,7 @@ Delete the QuickHide folder in your KSP/GameData folder.
 #### Changelog
 
 v3.00 - 2015.05.12
-* New: Added the possibility to chose which button will be hidden and which button won't be hidden,
+* New: Added the possibility to choose which button will be hidden and which button won't be hidden,
 * New: Added the possibility to pin the stock toolbar with mods buttons (thanks BevoLJ for this request),
 * New: Added a GUI to edit the settings,
 * New: Added a button on the Stock Toolbar to hide mods and to access to the settings,
