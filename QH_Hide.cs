@@ -25,9 +25,19 @@ using UnityEngine;
 namespace QuickHide {
 	public partial class QuickHide : MonoBehaviour {
 
-		[KSPField(isPersistant = true)] private static List<QMods> ModsToolbar = new List<QMods> ();
+		[KSPField(isPersistant = true)] internal static List<QMods> ModsToolbar = new List<QMods> ();
 		private DateTime Date = DateTime.Now;
 		private bool First = false;
+
+		// For FAR compatibility
+		private bool EditorhasRootPart {
+			get {
+				if (!HighLogic.LoadedSceneIsEditor) {
+					return true;
+				}
+				return EditorLogic.RootPart != null;
+			}
+		}
 
 		private Rect StockToolBar_Position {
 			get {
@@ -61,15 +71,14 @@ namespace QuickHide {
 			yield return new WaitForSeconds (0.5f);
 			if (QStockToolbar.Instance != null) {
 				QStockToolbar.Instance.RefreshPos ();
-				QStockToolbar.Instance.Refresh ();
 			}
-			PopulateAppLauncherButtons ();
+			PopulateAppLauncherButtons (true);
 			yield return new WaitForSeconds (0.5f);
 			First = true;
 		}
 
-		private void PopulateAppLauncherButtons() {
-			if (!QStockToolbar.isAvailable || !First) {
+		private void PopulateAppLauncherButtons(bool force = false) {
+			if (!QStockToolbar.isAvailable || (!First && !force)) {
 				return;
 			}
 			QuickHide.Warning ("Begin PopulateAppLauncherButtons", true);
@@ -79,7 +88,7 @@ namespace QuickHide {
 				if (!QStockToolbar.isModApp (_appLauncherButton) || QStockToolbar.Instance.isThisApp (_appLauncherButton)) {
 					continue;
 				}
-				QuickHide.Warning ("Mods: " + _appLauncherButton.toggleButton.onTrue.Method.Module.Assembly.GetName ().Name + " "+ _appLauncherButton.GetInstanceID(), true);
+				QuickHide.Warning ("Mods: " + QMods.GetModName(_appLauncherButton) + " " + _appLauncherButton.GetInstanceID(), true);
 				QMods _QData = ModsToolbar.Find (q => q.AppRef == QMods.GetAppRef(_appLauncherButton));
 				if (_QData != null) {
 					if (_QData.ModName != "None" && _QData.isActive) {
@@ -103,6 +112,9 @@ namespace QuickHide {
 				QSettings.Instance.Save ();
 			}
 			QuickHide.Warning ("End PopulateAppLauncherButtons", true);
+			QuickHide.Warning ("AppLauncherButtons count: " + _appLauncherButtons.Length, true);
+			QuickHide.Warning ("ModsToolbar count: " + ModsToolbar.Count, true);
+			QuickHide.Warning ("ModHasFirstConfig count: " + QSettings.Instance.ModHasFirstConfig.Count, true);
 		}
 
 		internal void DrawAppLauncherButtons() {
@@ -288,13 +300,13 @@ namespace QuickHide {
 				return;
 			}
 			if (!ApplicationLauncher.Ready) {
-				if (StockToolBar_Position.Contains (Mouse.screenPos)) {
+				if (StockToolBar_Position.Contains (Mouse.screenPos) || !EditorhasRootPart) {
 					Date = DateTime.Now;
 					Hide (false);
 					return;
 				}
 			} else {
-				if (!StockToolBar_Position.Contains (Mouse.screenPos)) {
+				if (!StockToolBar_Position.Contains (Mouse.screenPos) && EditorhasRootPart) {
 					if (!isPinned) {
 						if ((DateTime.Now - Date).TotalSeconds > QSettings.Instance.TimeToKeep) {
 							Hide (true);

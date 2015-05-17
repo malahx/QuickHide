@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 namespace QuickHide {
@@ -67,6 +68,14 @@ namespace QuickHide {
 					return false;
 				}
 				return appLauncherButton.State == RUIToggleButton.ButtonState.FALSE;
+			}
+		}
+		internal bool isEnabled {
+			get {
+				if (!isActive) {
+					return false;
+				}
+				return appLauncherButton.State != RUIToggleButton.ButtonState.DISABLED;
 			}
 		}
 		internal bool CanBePin {
@@ -179,11 +188,29 @@ namespace QuickHide {
 			}
 			AppScenesSaved = appLauncherButton.VisibleInScenes;
 		}
-		internal void SetFalse() {
-			if (!isActive || !isTrue) {
+		internal void Toggle() {
+			if (!isActive || !isEnabled) {
 				return;
 			}
-			appLauncherButton.SetFalse ();
+			if (isTrue) {
+				appLauncherButton.SetFalse (true);
+			} else {
+				appLauncherButton.SetTrue (true);
+			}
+			QuickHide.Log ("Toggle the AppLauncher: " + AppRef, true);
+		}
+		internal void SetTrue(bool force = false) {
+			if (!isActive || isTrue) {
+				return;
+			}
+			appLauncherButton.SetTrue (force);
+			QuickHide.Log ("SetFalse the AppLauncher: " + AppRef, true);
+		}
+		internal void SetFalse(bool force = false) {
+			if (!isActive || isFalse) {
+				return;
+			}
+			appLauncherButton.SetFalse (force);
 			QuickHide.Log ("SetFalse the AppLauncher: " + AppRef, true);
 		}
 		private void StoreAppScenes() {

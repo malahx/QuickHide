@@ -217,6 +217,7 @@ namespace QuickHide {
 				ApplicationLauncher.Instance.DisableMutuallyExclusive (appLauncherButton);
 			}
 			ApplicationLauncher.Instance.AddOnHideCallback (OnHide);
+			StartCoroutine (refresh ());
 			QuickHide.Log ("Add AppLauncher", true);
 		}
 
@@ -254,14 +255,20 @@ namespace QuickHide {
 
 		internal void Reset() {
 			if (appLauncherButton != null) {
-				Set (false);
-				if (!Enabled || (Enabled && (ModApp && !isModApp(appLauncherButton)) || (!ModApp && isModApp(appLauncherButton)))) {
+				if (!Enabled || (Enabled && (ModApp && !isModApp (appLauncherButton)) || (!ModApp && isModApp (appLauncherButton)))) {
 					Destroy ();
+				} else {
+					Set (QSettings.Instance.isHidden);
 				}
 			}
 			if (Enabled) {
 				Init ();
 			}
+		}
+
+		internal IEnumerator refresh() {
+			yield return new WaitForEndOfFrame();
+			Refresh ();
 		}
 
 		internal void Refresh() {

@@ -24,7 +24,7 @@ QuickHide is a plugin which adds the possibility to hide the stock toolbar and t
 
 You have two solutions to use QuickHide:
 * with the mouse: Put your mouse where is the stock toolbar and it will be shown,
-* with the Buttons to hide/show the mods of the stock toolbar.
+* with the HIDE/SHOW Button to hide/show the mod's buttons of the stock toolbar.
 
 #### How to install it?
 
@@ -39,6 +39,12 @@ Unzip all files. Merge the new QuickHide folder with the old folder which is in 
 Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
+
+v3.01 - 2015.05.18
+* Fix: Corrected the initialisation of the mod's buttons settings,
+* Fix: Compatibility fix for FAR: On the editor, the stock toolbar can't be hidden if there's no root part (thanks Kolago for this report),
+* Fix: Some minor fixes.
+NOTA: All mods which use the variable ApplicationLauncher.Ready to know if the scene is loaded won't work properly. I wouldn't make updates for each incompatibilities with mods which use this variable.
 
 v3.00 - 2015.05.12
 * New: Added the possibility to choose which button will be hidden and which button won't be hidden,

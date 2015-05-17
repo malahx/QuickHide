@@ -107,7 +107,6 @@ namespace QuickHide {
 			ToggleSettings ();
 			if (!WindowSettings) {
 				QStockToolbar.Instance.Reset ();
-				QStockToolbar.Instance.Refresh ();
 				QuickHide.BlizzyToolbar.Reset ();
 				QSettings.Instance.Save ();
 			}
@@ -146,7 +145,6 @@ namespace QuickHide {
 						return;
 					}
 				}
-
 				DrawExt (RectExt);
 			}
 			if (WindowSettings) {

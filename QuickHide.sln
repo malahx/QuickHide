@@ -16,6 +16,6 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		description = @#### QuickHide\n#### A plugin for Kerbal Space Program 1.0.2\n#### Copyright 2015 Malah
-		version = 3.00
+		version = 3.01
 	EndGlobalSection
 EndGlobal
