@@ -41,7 +41,7 @@ Delete the QuickHide folder in your KSP/GameData folder.
 #### Changelog
 
 v3.01 - 2015.05.18
-* Fix: Corrected the initialisation of the mod's buttons settings,
+* Fix: Corrected the initialization of the mod's buttons settings,
 * Fix: Compatibility fix for FAR: On the editor, the stock toolbar can't be hidden if there's no root part (thanks Kolago for this report),
 * Fix: Some minor fixes.
 NOTA: All mods which use the variable ApplicationLauncher.Ready to know if the scene is loaded won't work properly. I wouldn't make updates for each incompatibilities with mods which use this variable.
