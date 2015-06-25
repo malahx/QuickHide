@@ -1,5 +1,5 @@
 ﻿#### QuickHide
-#### A plugin for Kerbal Space Program 1.0.2
+#### A plugin for Kerbal Space Program 1.0.X
 #### Copyright 2015 Malah
 
 This program is free software: you can redistribute it and/or modify
@@ -40,6 +40,9 @@ Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
 
+v3.02 - 2015.06.25
+* Updated to KSP 1.0.X
+
 v3.01 - 2015.05.18
 * Fix: Corrected the initialization of the mod's buttons settings,
 * Fix: Compatibility fix for FAR: On the editor, the stock toolbar can't be hidden if there's no root part (thanks Kolago for this report),
@@ -56,7 +59,7 @@ v3.00 - 2015.05.12
 * New: Added new icons in DDS,
 * Fix: Deleted the default QuickHide's config file to keep your config file after an update,
 * Fix: Rework the code,
-* Updated to KSP 1.02
+* Updated to KSP 1.0.2
 
 v2.00 - 2015.02.13
 * New: Added an auto hide for the stock toolbar,
@@ -71,6 +74,7 @@ v1.01 - 2014.12.23
 
 v1.00 - 2014.12.08
 * First release.
+
 
 #### Thanks!
 
