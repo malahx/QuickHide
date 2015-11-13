@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QuickHide</RootNamespace>
     <AssemblyName>QuickHide</AssemblyName>
-    <ReleaseVersion>3.02</ReleaseVersion>
+    <ReleaseVersion>3.03</ReleaseVersion>
     <Description>#### QuickHide
 #### A plugin for Kerbal Space Program 1.0.2
 #### Copyright 2015 Malah
@@ -40,14 +40,16 @@
         <Command type="AfterBuild" command="./install.sh" />
       </CustomCommands>
     </CustomCommands>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\lib\1.0.4\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\lib\1.0.5.1028\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\lib\1.0.4\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\1.0.5.1028\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

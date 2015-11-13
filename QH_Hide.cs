@@ -206,6 +206,22 @@ namespace QuickHide {
 				if (QGUI.WindowExt || QGUI.WindowSettings) {
 					return true;
 				}
+				if (MessageSystem.Instance) {
+					if (MessageSystem.Instance.counterText.gameObject.activeSelf) {
+						return true;
+					}
+				}
+				foreach (QMods _qMods in ModsToolbar) {
+					if (_qMods == null) {
+						continue;
+					}
+					if (!_qMods.CanBePin || !_qMods.isActive) {
+						continue;
+					}
+					if (_qMods.isTrue) {
+						return true;
+					}
+				}
 				if (HighLogic.LoadedSceneIsFlight) {
 					if (ResourceDisplay.Instance != null) {
 						if (ResourceDisplay.Instance.appLauncherButton != null) {
@@ -274,22 +290,6 @@ namespace QuickHide {
 						}
 					}
 				}
-				if (MessageSystem.Instance) {
-					if (MessageSystem.Instance.counterText.gameObject.activeSelf) {
-						return true;
-					}
-				}
-				foreach (QMods _qMods in ModsToolbar) {
-					if (_qMods == null) {
-						continue;
-					}
-					if (!_qMods.CanBePin || !_qMods.isActive) {
-						continue;
-					}
-					if (_qMods.isTrue) {
-						return true;
-					}
-				}
 				return false;
 			}
 		}
@@ -306,10 +306,11 @@ namespace QuickHide {
 				}
 			} else {
 				if (!StockToolBar_Position.Contains (Mouse.screenPos) && EditorhasRootPart) {
-					if (!isPinned) {
-						if ((DateTime.Now - Date).TotalSeconds > QSettings.Instance.TimeToKeep) {
+					if ((DateTime.Now - Date).TotalSeconds > QSettings.Instance.TimeToKeep) {
+						if (!isPinned) {
 							Hide (true);
 						}
+					} else {
 						return;
 					}
 				}

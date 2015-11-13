@@ -2,12 +2,12 @@
 	"NAME": "QuickHide",
 	"URL": "https://raw.githubusercontent.com/malahx/QuickHide/master/QuickHide.version",
 	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/malahx/QuickHide/master/README.md", 
-	"DOWNLOAD": "https://kerbalstuff.com/mod/396/QuickHide"
-	"VERSION":{"MAJOR":3,"MINOR":0,"PATCH":2,"BUILD":0},
+	"DOWNLOAD": "https://kerbalstuff.com/mod/396/QuickHide",
+	"VERSION":{"MAJOR":3,"MINOR":0,"PATCH":3,"BUILD":0},
     "KSP_VERSION": {
         "MAJOR": 1,
         "MINOR": 0,
-        "PATCH": 4
+        "PATCH": 5
     },
     "KSP_VERSION_MIN": {
         "MAJOR": 1,

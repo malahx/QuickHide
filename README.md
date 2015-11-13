@@ -40,6 +40,12 @@ Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
 
+v3.03 - 2015.11.13
+* Fix: Corrected a performance drop,
+* New: Added a timer of 1 second to hide the hovering of the QuickHide button,
+* Fix: Some minor bug,
+* Compiled against KSP 1.0.5
+
 v3.02 - 2015.06.25
 * Updated to KSP 1.0.X
 

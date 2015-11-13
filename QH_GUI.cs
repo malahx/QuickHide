@@ -27,7 +27,23 @@ namespace QuickHide {
 		private static Texture2D TextureConf;
 
 		internal static bool WindowSettings = false;
-		internal static bool WindowExt = false;
+		private static bool windowExt = false;
+		private static bool keepExt = false;
+		private static DateTime keepDate = DateTime.Now;
+
+		internal static bool WindowExt {
+			get {
+				return windowExt || keepExt;
+			}
+			set {
+				bool _windowExt = value;
+				if (windowExt && !_windowExt) {
+					keepExt = true;
+					keepDate = DateTime.Now;
+				}
+				windowExt = _windowExt;
+			}
+		}
 
 		internal static Rect RectSettings = new Rect (0, 0, 900, 0);
 		internal static Rect RectExt = new Rect ();
@@ -138,17 +154,25 @@ namespace QuickHide {
 				return;
 			}
 			Refresh ();
+			if (WindowSettings) {
+				RectSettings = GUILayout.Window (1584654, RectSettings, DrawSettings, QuickHide.MOD + " " + QuickHide.VERSION, GUILayout.Width (RectSettings.width), GUILayout.ExpandHeight (true));
+			}
 			if (WindowExt) {
 				if (QStockToolbar.Instance.isActive) {
-					if (!QStockToolbar.Instance.isHovering) {
+					if (!QStockToolbar.Instance.isHovering && !keepExt) {
 						HideExt ();
 						return;
 					}
 				}
 				DrawExt (RectExt);
-			}
-			if (WindowSettings) {
-				RectSettings = GUILayout.Window (1584654, RectSettings, DrawSettings, QuickHide.MOD + " " + QuickHide.VERSION, GUILayout.Width (RectSettings.width), GUILayout.ExpandHeight (true));
+				if (keepExt) {
+					if ((DateTime.Now - keepDate).TotalSeconds > 1) {
+						keepExt = false;
+					}
+					if (QStockToolbar.Instance.isHovering) {
+						keepDate = DateTime.Now;
+					}
+				}
 			}
 		}
 
