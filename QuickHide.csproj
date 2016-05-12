@@ -7,10 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QuickHide</RootNamespace>
     <AssemblyName>QuickHide</AssemblyName>
-    <ReleaseVersion>3.03</ReleaseVersion>
-    <Description>#### QuickHide
-#### A plugin for Kerbal Space Program 1.0.2
-#### Copyright 2015 Malah
+    <ReleaseVersion>
+    </ReleaseVersion>
+    <Description>
 </Description>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -41,17 +40,7 @@
       </CustomCommands>
     </CustomCommands>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\lib\1.0.5.1028\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\lib\1.0.5.1028\UnityEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolbarWrapper.cs" />
@@ -80,8 +69,29 @@
     <None Include="GameData\QuickHide\Textures\StockToolBar.dds" />
     <None Include="GameData\QuickHide\Textures\StockToolBar_Hide.dds" />
     <None Include="GameData\QuickHide\Textures\StockToolBar_Show.dds" />
+    <None Include="install.sh" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GameData\QuickHide\Textures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\lib\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\lib\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\lib\Managed\KSPUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\lib\Managed\System.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\lib\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\lib\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

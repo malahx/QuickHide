@@ -1,6 +1,6 @@
 ﻿#### QuickHide
-#### A plugin for Kerbal Space Program 1.0.X
-#### Copyright 2015 Malah
+#### A plugin for Kerbal Space Program
+#### Copyright 2016 Malah
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,9 +40,16 @@ Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
 
+v3.04 - 2016.05.12
+* Compiled against KSP 1.1.2.1260
+It's a quick update to KSP 1.1.X, somes features don't work, you can't access the config window.
+
+v3.03a - 2015.11.13
+* Fix: Deleted the debug informations.
+
 v3.03 - 2015.11.13
-* Fix: Corrected a performance drop,
 * New: Added a timer of 1 second to hide the hovering of the QuickHide button,
+* Fix: Corrected a performance drop,
 * Fix: Some minor bug,
 * Compiled against KSP 1.0.5
 
@@ -94,7 +101,7 @@ v1.00 - 2014.12.08
 #### Links
 
 * http://forum.kerbalspaceprogram.com/threads/95168#QuickHide
-* https://kerbalstuff.com/mod/396/QuickHide
+* http://spacedock.info/mod/106/QuickHide
 * http://kerbal.curseforge.com/ksp-mods/226070-quickhide
 * https://github.com/malahx/QuickHide
 * Toolbar: http://forum.kerbalspaceprogram.com/threads/60863

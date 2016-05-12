@@ -1,6 +1,6 @@
 ﻿/* 
 QuickHide
-Copyright 2015 Malah
+Copyright 2016 Malah
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
+using KSP.UI.Screens;
 using System;
 using UnityEngine;
 
@@ -79,7 +80,7 @@ namespace QuickHide {
 				RectSettings.x = (Screen.width - RectSettings.width) / 2;
 				RectSettings.y = (Screen.height - RectSettings.height) / 2;
 			}
-			if (WindowExt) {
+			/*if (WindowExt) {
 				RectExt.width = 40;
 				RectExt.height = 46;
 				RectExt.x = (Screen.width - RectExt.width) / 2;
@@ -95,7 +96,7 @@ namespace QuickHide {
 						}
 					}
 				}
-			}
+			}*/
 		}
 
 		private static void Lock(bool activate, ControlTypes Ctrl) {
@@ -157,7 +158,7 @@ namespace QuickHide {
 			if (WindowSettings) {
 				RectSettings = GUILayout.Window (1584654, RectSettings, DrawSettings, QuickHide.MOD + " " + QuickHide.VERSION, GUILayout.Width (RectSettings.width), GUILayout.ExpandHeight (true));
 			}
-			if (WindowExt) {
+			/*if (WindowExt) {
 				if (QStockToolbar.Instance.isActive) {
 					if (!QStockToolbar.Instance.isHovering && !keepExt) {
 						HideExt ();
@@ -173,7 +174,7 @@ namespace QuickHide {
 						keepDate = DateTime.Now;
 					}
 				}
-			}
+			}*/
 		}
 
 		private static void DrawSettings(int id) {

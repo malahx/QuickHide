@@ -1,6 +1,6 @@
 ﻿/* 
 QuickHide
-Copyright 2015 Malah
+Copyright 2016 Malah
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
+using KSP.UI.Screens;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -114,7 +115,7 @@ namespace QuickHide {
 				if (!isActive || !CanUseIt) {
 					return false;
 				}
-				return appLauncherButton.toggleButton.IsHovering || (QGUI.RectExt.Contains (Mouse.screenPos) && QGUI.RectExt != new Rect());
+				return appLauncherButton.IsHovering || (QGUI.RectExt.Contains (Mouse.screenPos) && QGUI.RectExt != new Rect());
 			}
 		}
 
@@ -123,7 +124,7 @@ namespace QuickHide {
 				if (!isActive || QGUI.RectExt == new Rect()) {
 					return false;
 				}
-				return appLauncherButton.State == RUIToggleButton.ButtonState.TRUE;
+				return appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True;
 			}
 		}
 
@@ -132,7 +133,7 @@ namespace QuickHide {
 				if (!isActive || QGUI.RectExt == new Rect()) {
 					return false;
 				}
-				return appLauncherButton.State == RUIToggleButton.ButtonState.FALSE;
+				return appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.False;
 			}
 		}
 
@@ -143,7 +144,7 @@ namespace QuickHide {
 			return appLauncherButton.GetInstanceID () == AppLauncherButton.GetInstanceID ();
 		}
 
-		internal Rect Position {
+		/*internal Rect Position {
 			get {
 				if (!isActive) {
 					return new Rect ();
@@ -159,7 +160,7 @@ namespace QuickHide {
 				}
 				return _rect;
 			}
-		}
+		}*/
 
 		internal static QStockToolbar Instance {
 			get;
@@ -210,9 +211,9 @@ namespace QuickHide {
 				return;
 			}
 			if (ModApp) {
-				appLauncherButton = ApplicationLauncher.Instance.AddModApplication (new RUIToggleButton.OnTrue (this.OnTrue), new RUIToggleButton.OnFalse (this.OnFalse), new RUIToggleButton.OnHover (this.OnHover), new RUIToggleButton.OnHoverOut (this.OnHoverOut), new RUIToggleButton.OnEnable (this.OnEnable), new RUIToggleButton.OnDisable (this.OnDisable), AppScenes, GetTexture);
+				appLauncherButton = ApplicationLauncher.Instance.AddModApplication (OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, AppScenes, GetTexture);
 			} else {
-				appLauncherButton = ApplicationLauncher.Instance.AddApplication (new RUIToggleButton.OnTrue (this.OnTrue), new RUIToggleButton.OnFalse (this.OnFalse), new RUIToggleButton.OnHover (this.OnHover), new RUIToggleButton.OnHoverOut (this.OnHoverOut), new RUIToggleButton.OnEnable (this.OnEnable), new RUIToggleButton.OnDisable (this.OnDisable), GetTexture);
+				appLauncherButton = ApplicationLauncher.Instance.AddApplication (OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, GetTexture);
 				appLauncherButton.VisibleInScenes = AppScenes;
 				ApplicationLauncher.Instance.DisableMutuallyExclusive (appLauncherButton);
 			}
@@ -243,11 +244,11 @@ namespace QuickHide {
 				return;
 			}
 			if (SetTrue) {
-				if (appLauncherButton.State == RUIToggleButton.ButtonState.FALSE) {
+				if (isFalse) {
 					appLauncherButton.SetTrue (force);
 				}
 			} else {
-				if (appLauncherButton.State == RUIToggleButton.ButtonState.TRUE) {
+				if (isTrue) {
 					appLauncherButton.SetFalse (force);
 				}
 			}

@@ -1,6 +1,6 @@
 ﻿/* 
 QuickHide
-Copyright 2015 Malah
+Copyright 2016 Malah
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
+using KSP.UI;
+using KSP.UI.Screens;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,7 +54,7 @@ namespace QuickHide {
 					}
 				} else {
 					if (ApplicationLauncher.Instance.IsPositionedAtTop) {
-						return new Rect (Screen.width / 2, 0, Screen.width / 2, 40);
+						return new Rect (Screen.width - 40, 0, 40, Screen.height);
 					} else {
 						return new Rect (Screen.width / 2, Screen.height - 40, Screen.width / 2, 40);
 					}
@@ -203,14 +205,19 @@ namespace QuickHide {
 
 		private bool isPinned {
 			get {
-				if (QGUI.WindowExt || QGUI.WindowSettings) {
+				/*if (QGUI.WindowExt || QGUI.WindowSettings) {
 					return true;
-				}
+				}*/
 				if (MessageSystem.Instance) {
-					if (MessageSystem.Instance.counterText.gameObject.activeSelf) {
-						return true;
+					if (MessageSystem.Instance.appLauncherButton != null) {
+						if (MessageSystem.Instance.appLauncherButton.IsHovering || MessageSystem.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
+							return true;
+						}
+						//if (MessageSystem.Instance.counterText.gameObject.activeSelf) {
+						//return true;
 					}
 				}
+
 				foreach (QMods _qMods in ModsToolbar) {
 					if (_qMods == null) {
 						continue;
@@ -225,33 +232,33 @@ namespace QuickHide {
 				if (HighLogic.LoadedSceneIsFlight) {
 					if (ResourceDisplay.Instance != null) {
 						if (ResourceDisplay.Instance.appLauncherButton != null) {
-							if (ResourceDisplay.Instance.appLauncherButton.State == RUIToggleButton.ButtonState.TRUE) {
+							if (ResourceDisplay.Instance.appLauncherButton.IsHovering || ResourceDisplay.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 								return true;
 							}
-							ResourceDisplayOptions _resourceDisplayOptions = (ResourceDisplayOptions)ResourceDisplay.FindObjectOfType (typeof(ResourceDisplayOptions));
+							/*ResourceDisplayOptions _resourceDisplayOptions = (ResourceDisplayOptions)ResourceDisplay.FindObjectOfType (typeof(ResourceDisplayOptions));
 							if (_resourceDisplayOptions != null) {
 								if (_resourceDisplayOptions.gameObject != null) {
 									if (_resourceDisplayOptions.gameObject.activeSelf) {
 										return true;
 									}
 								}
-							}
+							}*/
 						}
 					}
 					if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER || HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX) {
 						CurrencyWidgetsApp _currencyWidgetsApp = (CurrencyWidgetsApp)CurrencyWidgetsApp.FindObjectOfType (typeof(CurrencyWidgetsApp));
 						if (_currencyWidgetsApp != null) {
 							if (_currencyWidgetsApp.appLauncherButton != null) {
-								if (_currencyWidgetsApp.appLauncherButton.State == RUIToggleButton.ButtonState.TRUE) {
+								if (_currencyWidgetsApp.appLauncherButton.IsHovering || _currencyWidgetsApp.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 									return true;
 								}
-								if (_currencyWidgetsApp.widgetSpawner != null) {
+								/*if (_currencyWidgetsApp.widgetSpawner != null) {
 									if (_currencyWidgetsApp.widgetSpawner.gameObject != null) {
 										if (_currencyWidgetsApp.widgetSpawner.gameObject.activeSelf) {
 											return true;
 										}
 									}
-								}
+								}*/
 							}
 						}
 					}
@@ -259,34 +266,34 @@ namespace QuickHide {
 				if (HighLogic.LoadedSceneIsEditor) {
 					if (EngineersReport.Ready && EngineersReport.Instance != null) {
 						if (EngineersReport.Instance.appLauncherButton != null) {
-							if (EngineersReport.Instance.appLauncherButton.State == RUIToggleButton.ButtonState.TRUE) {
+							if (EngineersReport.Instance.appLauncherButton.IsHovering || EngineersReport.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 								return true;
 							}
-							GenericAppFrame _genericAppFrame = (GenericAppFrame)EngineersReport.FindObjectOfType (typeof(GenericAppFrame));
+							/*GenericAppFrame _genericAppFrame = (GenericAppFrame)EngineersReport.FindObjectOfType (typeof(GenericAppFrame));
 							if (_genericAppFrame != null) {
 								if (_genericAppFrame.gameObject != null) {
 									if (_genericAppFrame.gameObject.activeSelf) {
 										return true;
 									}
 								}
-							}
+							}*/
 						}
 					}
 				}
 				if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 					if (ContractsApp.Instance != null) {
 						if (ContractsApp.Instance.appLauncherButton != null) {
-							if (ContractsApp.Instance.appLauncherButton.State == RUIToggleButton.ButtonState.TRUE) {
+							if (ContractsApp.Instance.appLauncherButton.IsHovering || ContractsApp.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 								return true;
 							}
-							GenericAppFrame _genericAppFrame = (GenericAppFrame)ContractsApp.FindObjectOfType (typeof(GenericAppFrame));
+							/*GenericAppFrame _genericAppFrame = (GenericAppFrame)ContractsApp.FindObjectOfType (typeof(GenericAppFrame));
 							if (_genericAppFrame != null) {
 								if (_genericAppFrame.gameObject != null) {
 									if (_genericAppFrame.gameObject.activeSelf) {
 										return true;
 									}
 								}
-							}
+							}*/
 						}
 					}
 				}

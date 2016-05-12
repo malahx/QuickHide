@@ -1,6 +1,6 @@
 ﻿/* 
 QuickHide
-Copyright 2015 Malah
+Copyright 2016 Malah
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
+using KSP.UI.Screens;
 using System;
 using System.IO;
 using System.Reflection;
@@ -59,7 +60,7 @@ namespace QuickHide {
 				if (!isActive) {
 					return false;
 				}
-				return appLauncherButton.State == RUIToggleButton.ButtonState.TRUE;
+				return appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True;
 			}
 		}
 		internal bool isFalse {
@@ -67,7 +68,7 @@ namespace QuickHide {
 				if (!isActive) {
 					return false;
 				}
-				return appLauncherButton.State == RUIToggleButton.ButtonState.FALSE;
+				return appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.False;
 			}
 		}
 		internal bool isEnabled {
@@ -75,7 +76,7 @@ namespace QuickHide {
 				if (!isActive) {
 					return false;
 				}
-				return appLauncherButton.State != RUIToggleButton.ButtonState.DISABLED;
+				return appLauncherButton.IsEnabled;
 			}
 		}
 		internal bool CanBePin {
@@ -174,13 +175,13 @@ namespace QuickHide {
 			if (Button == null) {
 				return "None";
 			}
-			return Button.toggleButton.onTrue.Method.Module.Assembly.GetName ().Name;
+			return Button.onTrue.Method.Module.Assembly.GetName ().Name;
 		}
 		internal static string GetAppRef(ApplicationLauncherButton Button) {
 			if (Button == null) {
 				return "None";
 			}
-			return string.Format("{0} ({1}.{2})", GetModName(Button), Button.toggleButton.onTrue.Method.DeclaringType.FullName, Button.toggleButton.onTrue.Method.Name);
+			return string.Format("{0} ({1}.{2})", GetModName(Button), Button.onTrue.Method.DeclaringType.FullName, Button.onTrue.Method.Name);
 		}
 		internal void SaveCurrentAppScenes() {
 			if (!isActive || isHidden) {
