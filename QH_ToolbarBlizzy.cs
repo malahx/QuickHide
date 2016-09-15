@@ -16,9 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-using System;
-using UnityEngine;
-
 namespace QuickHide {
 	public class QBlizzyToolbar {
 	
@@ -38,7 +35,7 @@ namespace QuickHide {
 		}
 
 		private void OnClick () {
-			QuickHide.Instance.HideMods ();
+			QHide.Instance.HideMods ();
 		}
 
 		private IButton Button;
@@ -70,7 +67,7 @@ namespace QuickHide {
 				ButtonConf = ToolbarManager.Instance.add (QuickHide.MOD + "Conf", QuickHide.MOD + "Conf");
 				ButtonConf.TexturePath = TexturePathConf;
 				ButtonConf.ToolTip = QuickHide.MOD + ": Settings";
-				ButtonConf.OnClick += (e) => QGUI.Settings ();
+				ButtonConf.OnClick += (e) => QHide.Instance.Settings ();
 			}
 		}
 

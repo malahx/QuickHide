@@ -16,18 +16,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-using KSP.UI;
+using UnityEngine.UI;
 using KSP.UI.Screens;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace QuickHide {
-	public partial class QuickHide : MonoBehaviour {
+	public partial class QHide {
 
-		[KSPField(isPersistant = true)] internal static List<QMods> ModsToolbar = new List<QMods> ();
-		private DateTime Date = DateTime.Now;
+		[KSPField (isPersistant = true)] internal static List<QMods> ModsToolbar = new List<QMods> ();
+		private DateTime dateAppLauncher = DateTime.Now;
+		private DateTime dateStage =  DateTime.Now;
 		private bool First = false;
 
 		// For FAR compatibility
@@ -42,183 +45,37 @@ namespace QuickHide {
 
 		private Rect StockToolBar_Position {
 			get {
-				if (ApplicationLauncher.Instance == null) {
-					return new Rect ();
-				}
-				if (!ApplicationLauncher.Ready) {
+				float _scale = 40 * GameSettings.UI_SCALE_APPS * GameSettings.UI_SCALE;
 					if (ApplicationLauncher.Instance.IsPositionedAtTop) {
-						return new Rect (Screen.width - 40, 0, 40, 40);
-					} else {
-						int _width = (HighLogic.LoadedSceneIsEditor ? 75 + 40 : 40);
-						return new Rect (Screen.width - _width, Screen.height - 40, _width, 40);
+						return new Rect (Screen.width - _scale, 0, _scale, Screen.height);
 					}
-				} else {
-					if (ApplicationLauncher.Instance.IsPositionedAtTop) {
-						return new Rect (Screen.width - 40, 0, 40, Screen.height);
-					} else {
-						return new Rect (Screen.width / 2, Screen.height - 40, Screen.width / 2, 40);
+					else {
+						return new Rect (Screen.width / 2, Screen.height - _scale, Screen.width / 2, _scale);
 					}
-				}
 			}
 		}
 
-		private IEnumerator AfterAllAppAdded() {
-			while (ApplicationLauncher.Instance == null) {
-				yield return 0;
-			}
-			while (!ApplicationLauncher.Ready) {
-				yield return 0;
-			}
-			yield return new WaitForSeconds (0.5f);
-			if (QStockToolbar.Instance != null) {
-				QStockToolbar.Instance.RefreshPos ();
-			}
-			PopulateAppLauncherButtons (true);
-			yield return new WaitForSeconds (0.5f);
-			First = true;
-		}
-
-		private void PopulateAppLauncherButtons(bool force = false) {
-			if (!QStockToolbar.isAvailable || (!First && !force)) {
-				return;
-			}
-			QuickHide.Warning ("Begin PopulateAppLauncherButtons", true);
-			bool _cansave = false;
-			ApplicationLauncherButton[] _appLauncherButtons = (ApplicationLauncherButton[])Resources.FindObjectsOfTypeAll (typeof(ApplicationLauncherButton));
-			foreach (ApplicationLauncherButton _appLauncherButton in _appLauncherButtons) {
-				if (!QStockToolbar.isModApp (_appLauncherButton) || QStockToolbar.Instance.isThisApp (_appLauncherButton)) {
-					continue;
-				}
-				QuickHide.Warning ("Mods: " + QMods.GetModName(_appLauncherButton) + " " + _appLauncherButton.GetInstanceID(), true);
-				QMods _QData = ModsToolbar.Find (q => q.AppRef == QMods.GetAppRef(_appLauncherButton));
-				if (_QData != null) {
-					if (_QData.ModName != "None" && _QData.isActive) {
-						if (!_QData.isThisApp(_appLauncherButton)) {
-							_QData.Refresh (_appLauncherButton);
-						}
-						if (_QData.isHidden != QSettings.Instance.isHidden) {
-							_QData.isHidden = QSettings.Instance.isHidden;
-						}
-						continue;
-					}
-					ModsToolbar.Remove (_QData);
-					Log ("Deleted an lost AppLauncherButton", true);
-				}
-				_QData = new QMods (_appLauncherButton);
-				ModsToolbar.Add (_QData);
-				_cansave = true;
-				Log ("Added the AppLauncherButton of: " + _QData.ModName, true);
-			}
-			if (_cansave) {
-				QSettings.Instance.Save ();
-			}
-			QuickHide.Warning ("End PopulateAppLauncherButtons", true);
-			QuickHide.Warning ("AppLauncherButtons count: " + _appLauncherButtons.Length, true);
-			QuickHide.Warning ("ModsToolbar count: " + ModsToolbar.Count, true);
-			QuickHide.Warning ("ModHasFirstConfig count: " + QSettings.Instance.ModHasFirstConfig.Count, true);
-		}
-
-		internal void DrawAppLauncherButtons() {
-			List <string> _modsName = new List<string> ();
-			foreach (QMods _qMods in ModsToolbar) {
-				if (_qMods == null) {
-					continue;
-				}
-				if (_qMods.ModName == "None" || _modsName.Contains(_qMods.ModName)) {
-					continue;
-				}
-				_modsName.Add (_qMods.ModName);
-				GUILayout.BeginHorizontal();
-				GUILayout.Label (string.Format("<b>{0}</b>", _qMods.ModName), GUILayout.Width(200));
-				bool _CanBePin = _qMods.CanBePin;
-				_CanBePin = GUILayout.Toggle (_CanBePin, "Can be pin for the AutoHide", GUILayout.Width(225));
-				if (_CanBePin != _qMods.CanBePin) {
-					_qMods.CanBePin = _CanBePin;
-				}
-				bool _CanBeHide = _qMods.CanBeHide;
-				_CanBeHide = GUILayout.Toggle (_CanBeHide, "Can be hidden", GUILayout.Width(140));
-				if (_CanBeHide != _qMods.CanBeHide) {
-					_qMods.CanBeHide = _CanBeHide;
-				}
-				if (_CanBeHide) {
-					bool _CanSetFalse = _qMods.CanSetFalse;
-					_CanSetFalse = GUILayout.Toggle (_CanSetFalse, "Set to False the button on hide", GUILayout.Width (250));
-					if (_CanSetFalse != _qMods.CanSetFalse) {
-						_qMods.CanSetFalse = _CanSetFalse;
-					}
-				}
-				GUILayout.EndHorizontal();
-				#if DEBUG
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(210);
-				GUILayout.Label("VisibleInScenes: " + _qMods.VisibleInScenes);
-				GUILayout.EndHorizontal();
-				GUILayout.BeginHorizontal();
-				GUILayout.Space(210);
-				GUILayout.Label("AppScenesSaved: " + _qMods.AppScenesSaved);
-				GUILayout.EndHorizontal();
-				#endif
-			}
-		}
-
-		public void HideMods() {
-			HideMods (!QSettings.Instance.isHidden);
-		}
-
-		public void HideMods(bool value) {
-			if (!QSettings.Instance.isHidden && value) {
-				PopulateAppLauncherButtons ();
-			}
-			foreach (QMods _qMods in ModsToolbar) {
-				if (!_qMods.CanBeHide) {
-					continue;
-				}
-				if (value) {
-					if (_qMods.CanSetFalse) {
-						_qMods.SetFalse ();
-					}
-				}
-				_qMods.isHidden = value;
-			}
-			if (QSettings.Instance.isHidden != value) {
-				QSettings.Instance.isHidden = value;
-				QSettings.Instance.Save ();
-				QStockToolbar.Instance.Refresh ();
-				QuickHide.BlizzyToolbar.Refresh ();
-			}
-			Log((QSettings.Instance.isHidden ? "Hide mods buttons" : "Show mods buttons"));
-				
-		}
-
-		private void Hide(bool Hide) {
-			if (ApplicationLauncher.Instance == null) {
-				return;
-			}
-			if (Hide) {
-				ApplicationLauncher.Instance.Hide ();
-				Log ("Hide the AppLauncher");
-			} else {
-				ApplicationLauncher.Instance.Show ();
-				Log ("Show the AppLauncher");
+		private Rect Stage_Position {
+			get {
+				float _width = 75 * GameSettings.UI_SCALE_STAGINGSTACK * GameSettings.UI_SCALE;
+				return new Rect ((HighLogic.LoadedSceneIsEditor ? Screen.width - _width : 0), 50, _width, Screen.height - 50);
 			}
 		}
 
 		private bool isPinned {
 			get {
-				/*if (QGUI.WindowExt || QGUI.WindowSettings) {
+				if (WindowSettings) {
 					return true;
-				}*/
+				}
 				if (MessageSystem.Instance) {
 					if (MessageSystem.Instance.appLauncherButton != null) {
 						if (MessageSystem.Instance.appLauncherButton.IsHovering || MessageSystem.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 							return true;
 						}
-						//if (MessageSystem.Instance.counterText.gameObject.activeSelf) {
-						//return true;
 					}
 				}
-
-				foreach (QMods _qMods in ModsToolbar) {
+				for (int _i = ModsToolbar.Count - 1; _i >= 0; --_i) {
+					QMods _qMods = ModsToolbar[_i];
 					if (_qMods == null) {
 						continue;
 					}
@@ -235,30 +92,16 @@ namespace QuickHide {
 							if (ResourceDisplay.Instance.appLauncherButton.IsHovering || ResourceDisplay.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 								return true;
 							}
-							/*ResourceDisplayOptions _resourceDisplayOptions = (ResourceDisplayOptions)ResourceDisplay.FindObjectOfType (typeof(ResourceDisplayOptions));
-							if (_resourceDisplayOptions != null) {
-								if (_resourceDisplayOptions.gameObject != null) {
-									if (_resourceDisplayOptions.gameObject.activeSelf) {
-										return true;
-									}
-								}
-							}*/
-						}
+}
 					}
 					if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER || HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX) {
-						CurrencyWidgetsApp _currencyWidgetsApp = (CurrencyWidgetsApp)CurrencyWidgetsApp.FindObjectOfType (typeof(CurrencyWidgetsApp));
+
+						CurrencyWidgetsApp _currencyWidgetsApp = (CurrencyWidgetsApp)CurrencyWidgetsApp.FindObjectOfType (typeof (CurrencyWidgetsApp));
 						if (_currencyWidgetsApp != null) {
 							if (_currencyWidgetsApp.appLauncherButton != null) {
 								if (_currencyWidgetsApp.appLauncherButton.IsHovering || _currencyWidgetsApp.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 									return true;
 								}
-								/*if (_currencyWidgetsApp.widgetSpawner != null) {
-									if (_currencyWidgetsApp.widgetSpawner.gameObject != null) {
-										if (_currencyWidgetsApp.widgetSpawner.gameObject.activeSelf) {
-											return true;
-										}
-									}
-								}*/
 							}
 						}
 					}
@@ -269,14 +112,6 @@ namespace QuickHide {
 							if (EngineersReport.Instance.appLauncherButton.IsHovering || EngineersReport.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 								return true;
 							}
-							/*GenericAppFrame _genericAppFrame = (GenericAppFrame)EngineersReport.FindObjectOfType (typeof(GenericAppFrame));
-							if (_genericAppFrame != null) {
-								if (_genericAppFrame.gameObject != null) {
-									if (_genericAppFrame.gameObject.activeSelf) {
-										return true;
-									}
-								}
-							}*/
 						}
 					}
 				}
@@ -286,14 +121,6 @@ namespace QuickHide {
 							if (ContractsApp.Instance.appLauncherButton.IsHovering || ContractsApp.Instance.appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True) {
 								return true;
 							}
-							/*GenericAppFrame _genericAppFrame = (GenericAppFrame)ContractsApp.FindObjectOfType (typeof(GenericAppFrame));
-							if (_genericAppFrame != null) {
-								if (_genericAppFrame.gameObject != null) {
-									if (_genericAppFrame.gameObject.activeSelf) {
-										return true;
-									}
-								}
-							}*/
 						}
 					}
 				}
@@ -301,27 +128,250 @@ namespace QuickHide {
 			}
 		}
 
-		private void LateUpdate() {
-			if (!QSettings.Instance.MouseHide || ApplicationLauncher.Instance == null || !First) {
+		private IEnumerator AfterAllAppAdded() {
+			while (ApplicationLauncher.Instance == null) {
+				yield return 0;
+			}
+			while (!ApplicationLauncher.Ready) {
+				yield return 0;
+			}
+			yield return new WaitForSecondsRealtime (0.5f);
+			if (QStockToolbar.Instance != null) {
+				QStockToolbar.Instance.RefreshPos ();
+			}
+			PopulateAppLauncherButtons (true);
+			yield return new WaitForSecondsRealtime (0.5f);
+			First = true;
+			Log ("AfterAllAppAdded", "QHide");
+		}
+
+		internal IEnumerator UpdateMods() {
+			yield return new WaitForSecondsRealtime (1);
+			Coroutine _coroutine = coroutineMods;
+			Log ("Start UpdateMods " + _coroutine.GetHashCode (), "QHide");
+			while (_coroutine == coroutineMods) {
+				while (!QStockToolbar.isAvailable || !First || (!QSettings.Instance.isHidden && !WindowSettings)) {
+					yield return 0;
+				}
+				PopulateAppLauncherButtons ();
+				yield return new WaitForSecondsRealtime (10);
+			}
+			Log ("End UpdateMods " + _coroutine.GetHashCode (), "QHide");
+		}
+
+		private void OnShowUI() {
+			dateAppLauncher = DateTime.Now;
+			dateStage = DateTime.Now;
+			First = true;
+			Log ("OnShowUI", "QHide");
+		}
+
+		private void OnHideUI() {
+			First = false;
+			Log ("OnHideUI", "QHide");
+		}
+
+		private void OnGameSceneLoadRequested(GameScenes gameScene) {
+			First = false;
+			Log ("OnGameSceneLoadRequested", "QHide");
+		}
+
+		private void PopulateAppLauncherButtons(bool force = false) {
+			if (!QStockToolbar.isAvailable || (!First && !force)) {
 				return;
 			}
+			Log ("Begin PopulateAppLauncherButtons", "QHide");
+			bool _cansave = false;
+			ApplicationLauncherButton[] _appLauncherButtons = (ApplicationLauncherButton[])Resources.FindObjectsOfTypeAll (typeof (ApplicationLauncherButton));
+			for (int _i = _appLauncherButtons.Length - 1; _i >= 0; --_i) {
+				ApplicationLauncherButton _appLauncherButton = _appLauncherButtons[_i];
+				if (!QStockToolbar.isModApp (_appLauncherButton) || QStockToolbar.Instance.isThisApp (_appLauncherButton)) {
+					continue;
+				}
+				Log ("Mods: " + QMods.GetModName (_appLauncherButton) + " " + _appLauncherButton.GetInstanceID (), "QHide");
+				QMods _QData = ModsToolbar.Find (q => q.AppRef == QMods.GetAppRef (_appLauncherButton));
+				if (_QData != null) {
+					if (_QData.ModName != "None" && _QData.isActive) {
+						if (!_QData.isThisApp (_appLauncherButton)) {
+							_QData.Refresh (_appLauncherButton);
+						}
+						if (_QData.isHidden != QSettings.Instance.isHidden) {
+							_QData.isHidden = QSettings.Instance.isHidden;
+						}
+						continue;
+					}
+					ModsToolbar.Remove (_QData);
+					//Log ("Deleted an lost AppLauncherButton", "QHide");
+				}
+				_QData = new QMods (_appLauncherButton);
+				ModsToolbar.Add (_QData);
+				_cansave = true;
+				Log ("Added the AppLauncherButton of: " + _QData.ModName, "QHide");
+			}
+			if (_cansave) {
+				QSettings.Instance.Save ();
+			}
+			Log ("End PopulateAppLauncherButtons", "QHide");
+			Log ("AppLauncherButtons count: " + _appLauncherButtons.Length, "QHide");
+			Log ("ModsToolbar count: " + ModsToolbar.Count, "QHide");
+			Log ("ModHasFirstConfig count: " + QSettings.Instance.ModHasFirstConfig.Count, "QHide");
+		}
+
+		internal void DrawAppLauncherButtons() {
+			List<string> _modsName = new List<string> ();
+			for (int _i = ModsToolbar.Count - 1; _i >= 0; --_i) {
+				QMods _qMods = ModsToolbar[_i];
+				if (_qMods == null) {
+					continue;
+				}
+				if (_qMods.ModName == "None" || _modsName.Contains (_qMods.ModName)) {
+					continue;
+				}
+				_modsName.Add (_qMods.ModName);
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label (string.Format ("<b>{0}</b>", _qMods.ModName), GUILayout.Width (200));
+				bool _CanBePin = _qMods.CanBePin;
+				_CanBePin = GUILayout.Toggle (_CanBePin, "Can be pin for the AutoHide", GUILayout.Width (225));
+				if (_CanBePin != _qMods.CanBePin) {
+					_qMods.CanBePin = _CanBePin;
+				}
+				bool _CanBeHide = _qMods.CanBeHide;
+				_CanBeHide = GUILayout.Toggle (_CanBeHide, "Can be hidden", GUILayout.Width (140));
+				if (_CanBeHide != _qMods.CanBeHide) {
+					_qMods.CanBeHide = _CanBeHide;
+				}
+				if (_CanBeHide) {
+					bool _CanSetFalse = _qMods.CanSetFalse;
+					_CanSetFalse = GUILayout.Toggle (_CanSetFalse, "Set to False the button on hide", GUILayout.Width (250));
+					if (_CanSetFalse != _qMods.CanSetFalse) {
+						_qMods.CanSetFalse = _CanSetFalse;
+					}
+				}
+				GUILayout.EndHorizontal ();
+#if DEBUG
+				GUILayout.BeginHorizontal();
+				GUILayout.Space(210);
+				GUILayout.Label("VisibleInScenes: " + _qMods.VisibleInScenes);
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
+				GUILayout.Space(210);
+				GUILayout.Label("AppScenesSaved: " + _qMods.AppScenesSaved);
+				GUILayout.EndHorizontal();
+#endif
+			}
+		}
+
+		public void HideMods() {
+			HideMods (!QSettings.Instance.isHidden);
+		}
+
+		public void HideMods(bool value) {
+			if (!QSettings.Instance.isHidden && value) {
+				PopulateAppLauncherButtons ();
+			}
+			for (int _i = ModsToolbar.Count - 1; _i >= 0; --_i) {
+				QMods _qMods = ModsToolbar[_i];
+				if (!_qMods.CanBeHide) {
+					continue;
+				}
+				if (value) {
+					if (_qMods.CanSetFalse) {
+						_qMods.SetFalse ();
+					}
+				}
+				_qMods.isHidden = value;
+			}
+			if (QSettings.Instance.isHidden != value) {
+				QSettings.Instance.isHidden = value;
+				QSettings.Instance.Save ();
+				QStockToolbar.Instance.Refresh ();
+				BlizzyToolbar.Refresh ();
+			}
+			Log ((QSettings.Instance.isHidden ? "Hide mods buttons" : "Show mods buttons"));
+
+		}
+
+		private void HideAppLauncher(bool hide) {
+			if (ApplicationLauncher.Instance == null) {
+				return;
+			}
+			if (hide) {
+				ApplicationLauncher.Instance.Hide ();
+			}
+			else {
+				ApplicationLauncher.Instance.Show ();
+			}
+			Log ("HideAppLauncher: " + hide);
+		}
+
+		private void HideStage(bool hide) {
+			if (StageManager.Instance.Visible == !hide) {
+				return;
+			}
+			typeof (StageManager).GetProperty ("Visible").SetValue (StageManager.Instance, !hide, null);
+			FieldInfo[] _properties = typeof (StageManager).GetFields (BindingFlags.NonPublic | BindingFlags.Instance);
+			for (int _i = _properties.Length - 1; _i >= 0; --_i) {
+				FieldInfo _property = _properties[_i];
+				if (_property.FieldType == typeof (VerticalLayoutGroup)) {
+					VerticalLayoutGroup _vLayoutGroup = (VerticalLayoutGroup)_property.GetValue (StageManager.Instance);
+					_vLayoutGroup.gameObject.SetActive (!hide);
+					break;
+				}
+			}
+			Log ("HideStageManager: " + hide);
+		}
+
+		private void LateUpdate() {
+			if (!First) {
+				return;
+			}
+			if (QSettings.Instance.HideAppLauncher && ApplicationLauncher.Instance != null) {
+				AutoHideAppLauncher ();
+			}
+			if (QSettings.Instance.HideStage && (HighLogic.LoadedSceneIsFlight || HighLogic.LoadedSceneIsEditor)) {
+				AutoHideStage ();
+			}
+		}
+
+		private void AutoHideAppLauncher() {
 			if (!ApplicationLauncher.Ready) {
 				if (StockToolBar_Position.Contains (Mouse.screenPos) || !EditorhasRootPart) {
-					Date = DateTime.Now;
-					Hide (false);
-					return;
+					dateAppLauncher = DateTime.Now;
+					HideAppLauncher (false);
 				}
-			} else {
+			}
+			else {
 				if (!StockToolBar_Position.Contains (Mouse.screenPos) && EditorhasRootPart) {
-					if ((DateTime.Now - Date).TotalSeconds > QSettings.Instance.TimeToKeep) {
+					if ((DateTime.Now - dateAppLauncher).TotalSeconds > QSettings.Instance.TimeToKeep) {
 						if (!isPinned) {
-							Hide (true);
+							HideAppLauncher (true);
 						}
-					} else {
+					}
+					else {
 						return;
 					}
 				}
-				Date = DateTime.Now;
+				dateAppLauncher = DateTime.Now;
+			}
+		}
+
+		private void AutoHideStage() {
+			if (!StageManager.Instance.Visible) {
+				if (Stage_Position.Contains (Mouse.screenPos) || !EditorhasRootPart) {
+					dateStage = DateTime.Now;
+					HideStage (false);
+				}
+			}
+			else {
+				if (!Stage_Position.Contains (Mouse.screenPos) && EditorhasRootPart) {
+					if ((DateTime.Now - dateStage).TotalSeconds > QSettings.Instance.TimeToKeep) {
+						HideStage (true);
+					}
+					else {
+						return;
+					}
+				}
+				dateStage = DateTime.Now;
 			}
 		}
 	}

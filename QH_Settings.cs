@@ -16,20 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
 namespace QuickHide {
-	public class QSettings : MonoBehaviour {
+	public class QSettings : QuickHide {
 
-		public readonly static QSettings Instance = new QSettings();
+		[KSPField (isPersistant = true)] private static readonly QSettings instance = new QSettings ();
+		public static QSettings Instance {
+			get {
+				if (!instance.isLoaded) {
+					instance.Load ();
+				}
+				return instance;
+			}
+		}
+		internal static string FileConfig = KSPUtil.ApplicationRootPath + "GameData/" + MOD + "/Config.txt";
 
-		internal static string FileConfig = KSPUtil.ApplicationRootPath + "GameData/" + QuickHide.MOD + "/Config.txt";
+		[KSPField (isPersistant = true)] private bool isLoaded = false;
 
+		[Persistent] public bool Debug = false;
 		[Persistent] public bool isHidden = false;
-		[Persistent] public bool MouseHide = true;
+		[Persistent] public bool HideAppLauncher = true;
+		[Persistent] public bool HideStage = true;
 		[Persistent] public int TimeToKeep = 2;
 		[Persistent] public bool StockToolBar = true;
 		[Persistent] public bool BlizzyToolBar = true;
@@ -42,20 +51,23 @@ namespace QuickHide {
 		public void Save() {
 			ConfigNode _temp = ConfigNode.CreateConfigFromObject(this, new ConfigNode());
 			_temp.Save(FileConfig);
-			QuickHide.Log ("Settings Saved");
+			Log ("Settings Saved", "QSettings", true);
 		}
 		public void Load() {
 			if (File.Exists (FileConfig)) {
 				try {
 					ConfigNode _temp = ConfigNode.Load (FileConfig);
 					ConfigNode.LoadObjectFromConfig (this, _temp);
-				} catch {
+					Log ("Settings Loaded", "QSettings", true);
+				}
+				catch {
 					Save ();
 				}
-				QuickHide.Log ("Settings Loaded");
-			} else {
+			}
+			else {
 				Save ();
 			}
+			isLoaded = true;
 		}
 	}
 }

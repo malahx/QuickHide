@@ -46,7 +46,6 @@
     <Compile Include="ToolbarWrapper.cs" />
     <Compile Include="QH_Hide.cs" />
     <Compile Include="QH.cs" />
-    <Compile Include="QH_Quick.cs" />
     <Compile Include="QH_Settings.cs" />
     <Compile Include="QH_GUI.cs" />
     <Compile Include="QH_ToolbarBlizzy.cs" />
@@ -66,7 +65,6 @@
     <None Include="GameData\QuickHide\Textures\BlizzyToolBar.dds" />
     <None Include="GameData\QuickHide\Textures\BlizzyToolBar_Hide.dds" />
     <None Include="GameData\QuickHide\Textures\BlizzyToolBar_Show.dds" />
-    <None Include="GameData\QuickHide\Textures\StockToolBar.dds" />
     <None Include="GameData\QuickHide\Textures\StockToolBar_Hide.dds" />
     <None Include="GameData\QuickHide\Textures\StockToolBar_Show.dds" />
     <None Include="install.sh" />
@@ -80,9 +78,6 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\lib\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-    <Reference Include="KSPUtil">
-      <HintPath>..\lib\Managed\KSPUtil.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <HintPath>..\lib\Managed\System.dll</HintPath>

@@ -16,15 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
+using KSP.UI;
 using KSP.UI.Screens;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QuickHide {
-	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
-	public class QStockToolbar : MonoBehaviour {
+
+	public partial class QStockToolbar {
 
 		internal static bool Enabled {
 			get {
@@ -44,9 +43,9 @@ namespace QuickHide {
 			}
 		}
 		
-		private ApplicationLauncher.AppScenes AppScenes = ApplicationLauncher.AppScenes.ALWAYS;
-		public static string TexturePathHide = QuickHide.MOD + "/Textures/StockToolBar_Hide";
-		public static string TexturePathShow = QuickHide.MOD + "/Textures/StockToolBar_Show";
+		private ApplicationLauncher.AppScenes AppScenes = ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.VAB;
+		public static string TexturePathHide = MOD + "/Textures/StockToolBar_Hide";
+		public static string TexturePathShow = MOD + "/Textures/StockToolBar_Show";
 
 		public static string TexturePath {
 			get {
@@ -55,36 +54,13 @@ namespace QuickHide {
 		}
 
 		private void OnTrue () {
-			QuickHide.Instance.HideMods (true);
+			QHide.Instance.HideMods (true);
 		}
 
 		private void OnFalse () {
-			QuickHide.Instance.HideMods (false);
+			QHide.Instance.HideMods (false);
 		}
 
-		private void OnHover () {
-			if (QGUI.WindowSettings || !isActive || !isHovering) {
-				return;
-			}
-			QGUI.ShowExt ();
-		}
-
-		private void OnHoverOut () {
-			if (QGUI.WindowSettings || !QGUI.WindowExt) {
-				return;
-			}
-			if (QGUI.RectExt == new Rect () || !isHovering) {
-				QGUI.HideExt ();
-			}
-		}
-
-		private void OnEnable () {
-		}
-
-		private void OnDisable () {
-			QGUI.HideExt ();
-		}
-			
 		private Texture2D GetTexture {
 			get {
 				return GameDatabase.Instance.GetTexture(TexturePath, false);
@@ -115,25 +91,25 @@ namespace QuickHide {
 				if (!isActive || !CanUseIt) {
 					return false;
 				}
-				return appLauncherButton.IsHovering || (QGUI.RectExt.Contains (Mouse.screenPos) && QGUI.RectExt != new Rect());
+				return appLauncherButton.IsHovering;
 			}
 		}
 
 		internal bool isTrue {
 			get {
-				if (!isActive || QGUI.RectExt == new Rect()) {
+				if (!isActive) {
 					return false;
 				}
-				return appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.True;
+				return appLauncherButton.toggleButton.CurrentState == UIRadioButton.State.True;
 			}
 		}
 
 		internal bool isFalse {
 			get {
-				if (!isActive || QGUI.RectExt == new Rect()) {
+				if (!isActive) {
 					return false;
 				}
-				return appLauncherButton.toggleButton.CurrentState == KSP.UI.UIRadioButton.State.False;
+				return appLauncherButton.toggleButton.CurrentState == UIRadioButton.State.False;
 			}
 		}
 
@@ -144,30 +120,23 @@ namespace QuickHide {
 			return appLauncherButton.GetInstanceID () == AppLauncherButton.GetInstanceID ();
 		}
 
-		/*internal Rect Position {
+		internal Rect Position {
 			get {
-				if (!isActive) {
+				if (appLauncherButton == null || !isAvailable) {
 					return new Rect ();
 				}
-				Camera _camera = UIManager.instance.uiCameras [0].camera;
-				Vector3 _pos = appLauncherButton.GetAnchor ();
-				Rect _rect = new Rect (0, 0, 40, 40);
-				if (ApplicationLauncher.Instance.IsPositionedAtTop) {
-					_rect.x = _camera.WorldToScreenPoint (_pos).x;
-				} else {
-					_rect.x = _camera.WorldToScreenPoint (_pos).x - 40;
-					_rect.y = Screen.height - 40;
-				}
-				return _rect;
+				Camera _camera = UIMainCamera.Camera;
+				Vector3 _pos = _camera.WorldToScreenPoint (appLauncherButton.GetAnchorUL());
+				return new Rect (_pos.x, Screen.height - _pos.y, 41, 41);
 			}
-		}*/
+		}
 
 		internal static QStockToolbar Instance {
 			get;
 			private set;
 		}
 
-		private void Awake() {
+		protected override void Awake() {
 			if (Instance != null) {
 				Destroy (this);
 				return;
@@ -177,7 +146,7 @@ namespace QuickHide {
 			GameEvents.onGUIApplicationLauncherReady.Add (AppLauncherReady);
 			GameEvents.onGUIApplicationLauncherDestroyed.Add (AppLauncherDestroyed);
 			GameEvents.onLevelWasLoadedGUIReady.Add (AppLauncherDestroyed);
-			QuickHide.Log ("Instantiate QStockToolbar", true);
+			Log ("Awake", "QStockToolbar");
 		}
 			
 		private void AppLauncherReady() {
@@ -186,24 +155,26 @@ namespace QuickHide {
 				return;
 			}
 			Init ();
+			Log ("AppLauncherReady", "QStockToolbar");
 		}
 
 		private void AppLauncherDestroyed(GameScenes gameScene) {
 			if (CanUseIt) {
 				return;
 			}
-			Destroy ();
+			AppLauncherDestroyed ();
 		}
 		
 		private void AppLauncherDestroyed() {
 			Destroy ();
+			Log ("AppLauncherDestroyed", "QStockToolbar");
 		}
 
-		private void OnDestroy() {
+		protected override void OnDestroy() {
 			GameEvents.onGUIApplicationLauncherReady.Remove (AppLauncherReady);
 			GameEvents.onGUIApplicationLauncherDestroyed.Remove (AppLauncherDestroyed);
 			GameEvents.onLevelWasLoadedGUIReady.Remove (AppLauncherDestroyed);
-			QuickHide.Log ("Destroy QStockToolbar", true);
+			Log ("OnDestroy", "QStockToolbar");
 		}
 
 		private void Init() {
@@ -211,22 +182,23 @@ namespace QuickHide {
 				return;
 			}
 			if (ModApp) {
-				appLauncherButton = ApplicationLauncher.Instance.AddModApplication (OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, AppScenes, GetTexture);
+				appLauncherButton = ApplicationLauncher.Instance.AddModApplication (OnTrue, OnFalse, null, null, null, null, AppScenes, GetTexture);
 			} else {
-				appLauncherButton = ApplicationLauncher.Instance.AddApplication (OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, GetTexture);
+				appLauncherButton = ApplicationLauncher.Instance.AddApplication (OnTrue, OnFalse, null, null, null, null, GetTexture);
 				appLauncherButton.VisibleInScenes = AppScenes;
 				ApplicationLauncher.Instance.DisableMutuallyExclusive (appLauncherButton);
 			}
+			appLauncherButton.onRightClick = delegate { QHide.Instance.Settings (); };
 			ApplicationLauncher.Instance.AddOnHideCallback (OnHide);
 			StartCoroutine (refresh ());
-			QuickHide.Log ("Add AppLauncher", true);
+			Log ("Init", "QStockToolbar");
 		}
 
 		private void OnHide() {
-			if (QGUI.WindowSettings) {
-				QGUI.ToggleSettings ();
+			if (QHide.Instance.WindowSettings) {
+				QHide.Instance.ToggleSettings ();
+				Log ("OnHide", "QStockToolbar");
 			}
-			QGUI.HideExt ();
 		}
 
 		private void Destroy() {
@@ -236,7 +208,7 @@ namespace QuickHide {
 			ApplicationLauncher.Instance.RemoveModApplication (appLauncherButton);
 			ApplicationLauncher.Instance.RemoveApplication (appLauncherButton);
 			appLauncherButton = null;
-			QuickHide.Log ("Destroy AppLauncher", true);
+			Log ("Destroy", "QStockToolbar");
 		}
 
 		internal void Set(bool SetTrue, bool force = false) {
@@ -252,6 +224,7 @@ namespace QuickHide {
 					appLauncherButton.SetFalse (force);
 				}
 			}
+			Log ("Set " + SetTrue + " force: " + force, "QStockToolbar");
 		}
 
 		internal void Reset() {
@@ -265,6 +238,7 @@ namespace QuickHide {
 			if (Enabled) {
 				Init ();
 			}
+			Log ("Reset", "QStockToolbar");
 		}
 
 		internal IEnumerator refresh() {
@@ -278,6 +252,7 @@ namespace QuickHide {
 			}
 			appLauncherButton.SetTexture (GetTexture);
 			Set (QSettings.Instance.isHidden);
+			Log ("Refresh", "QStockToolbar");
 		}
 
 		internal void RefreshPos() {
@@ -285,13 +260,14 @@ namespace QuickHide {
 				return;
 			}
 			StartCoroutine (PutInLast ());
+			Log ("RefreshPos", "QStockToolbar");
 		}
 
 		private IEnumerator PutInLast() {
 			appLauncherButton.VisibleInScenes = ApplicationLauncher.AppScenes.NEVER;
 			yield return new WaitForEndOfFrame ();
 			appLauncherButton.VisibleInScenes = AppScenes;
-			QuickHide.Log ("PutInLast AppLauncher", true);
+			Log ("PutInLast", "QStockToolbar");
 		}
 	}
 }

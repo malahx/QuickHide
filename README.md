@@ -40,7 +40,17 @@ Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
 
+v3.05 - 2016.09.15
+* New: Added a right click option on the stocktoolbar to access to the settings window,
+* Fix: Corrected the mouse over with scales parameters,
+* Fix: Enhanced the mouse over of the applauncher,
+* Fix: Deleted foreach functions,
+* Fix: Deleted useless libraries,
+* Fix: Enhanced the settings functions,
+* Compiled against KSP 1.2.0.1479
+
 v3.04 - 2016.05.12
+* Fix: Disabled some features,
 * Compiled against KSP 1.1.2.1260
 It's a quick update to KSP 1.1.X, somes features don't work, you can't access the config window.
 

@@ -16,83 +16,56 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
-using KSP.UI.Screens;
-using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace QuickHide {
 
+	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
+	public partial class QStockToolbar : QuickHide { }
+
 	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
-	public partial class QuickHide : MonoBehaviour {
+	public partial class QHide : QuickHide { }
 
-		public static QuickHide Instance;
-		[KSPField(isPersistant = true)] internal static QBlizzyToolbar BlizzyToolbar;
+	public class QuickHide : MonoBehaviour {
 
-		private void Awake() {
-			if (Instance != null || !HighLogic.LoadedSceneIsGame) {
-				Destroy (this);
-				return;
+		public readonly static string VERSION = Assembly.GetExecutingAssembly ().GetName ().Version.Major + "." + Assembly.GetExecutingAssembly ().GetName ().Version.Minor + Assembly.GetExecutingAssembly ().GetName ().Version.Build;
+		public readonly static string MOD = Assembly.GetExecutingAssembly ().GetName ().Name;
+
+		internal static void Log(string String, string Title = null, bool force = false) {
+			if (!force) {
+				if (!QSettings.Instance.Debug) {
+					return;
+				}
 			}
-			Instance = this;
-			if (BlizzyToolbar == null) BlizzyToolbar = new QBlizzyToolbar ();
-			GameEvents.onShowUI.Add (OnShowUI);
-			GameEvents.onHideUI.Add (OnHideUI);
-			GameEvents.onGUIAdministrationFacilitySpawn.Add (OnHideUI);
-			GameEvents.onGUIMissionControlSpawn.Add (OnHideUI);
-			GameEvents.onGUIRnDComplexSpawn.Add (OnHideUI);
-			GameEvents.onGUIAstronautComplexSpawn.Add (OnHideUI);
-			GameEvents.onGUIAdministrationFacilityDespawn.Add (OnShowUI);
-			GameEvents.onGUIMissionControlDespawn.Add (OnShowUI);
-			GameEvents.onGUIRnDComplexDespawn.Add (OnShowUI);
-			GameEvents.onGUIAstronautComplexDespawn.Add (OnShowUI);
-			GameEvents.onGameSceneLoadRequested.Add (OnGameSceneLoadRequested);
-		}
-
-		private void Start() {
-			QSettings.Instance.Load ();
-			QGUI.Init ();
-			BlizzyToolbar.Start ();
-			StartCoroutine (AfterAllAppAdded ());
-			StartEach ();
-		}
-
-		private void OnDestroy() {
-			if (BlizzyToolbar != null) {
-				BlizzyToolbar.OnDestroy ();
+			if (Title == null) {
+				Title = MOD;
 			}
-			GameEvents.onShowUI.Remove (OnShowUI);
-			GameEvents.onHideUI.Remove (OnHideUI);
-			GameEvents.onGUIAdministrationFacilitySpawn.Remove (OnHideUI);
-			GameEvents.onGUIMissionControlSpawn.Remove (OnHideUI);
-			GameEvents.onGUIRnDComplexSpawn.Remove (OnHideUI);
-			GameEvents.onGUIAstronautComplexSpawn.Remove (OnHideUI);
-			GameEvents.onGUIAdministrationFacilityDespawn.Remove (OnShowUI);
-			GameEvents.onGUIMissionControlDespawn.Remove (OnShowUI);
-			GameEvents.onGUIRnDComplexDespawn.Remove (OnShowUI);
-			GameEvents.onGUIAstronautComplexDespawn.Remove (OnShowUI);
-			GameEvents.onGameSceneLoadRequested.Remove (OnGameSceneLoadRequested);
-			StopEach ();
-		}
-
-		private void OnShowUI() {
-			if (ApplicationLauncher.Instance != null) {
-				Date = DateTime.Now;
-				First = true;
+			else {
+				Title = string.Format ("{0}({1})", MOD, Title);
 			}
+			Debug.Log (string.Format ("{0}[{1}]: {2}", Title, VERSION, String));
 		}
-
-		private void OnHideUI() {
-			if (ApplicationLauncher.Instance != null) {
-				First = false;
+		internal static void Warning(string String, string Title = null) {
+			if (Title == null) {
+				Title = MOD;
 			}
+			else {
+				Title = string.Format ("{0}({1})", MOD, Title);
+			}
+			Debug.LogWarning (string.Format ("{0}[{1}]: {2}", Title, VERSION, String));
 		}
 
-		private void OnGUI() {
-			QGUI.OnGUI ();
+		protected virtual void Awake() {
+			Log ("Awake");
 		}
 
-		protected void OnGameSceneLoadRequested(GameScenes gameScene) {
-			First = false;
+		protected virtual void Start() {
+			Log ("Start");
+		}
+
+		protected virtual void OnDestroy() {
+			Log ("OnDestroy");
 		}
 	}
 }

@@ -17,10 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 using KSP.UI.Screens;
-using System;
-using System.IO;
-using System.Reflection;
-using UnityEngine;
 
 namespace QuickHide {
 	public class QMods {
@@ -34,7 +30,7 @@ namespace QuickHide {
 				CanBeHide = true;
 				CanSetFalse = true;
 				QSettings.Instance.ModHasFirstConfig.Add (ModName);
-				QuickHide.Log ("Config set to default for the mod: " + AppRef, true);
+				QuickHide.Log ("Config set to default for the mod: " + AppRef, "QMods");
 			}
 			if (!isHidden && CanBeHide) {
 				isHidden = QSettings.Instance.isHidden;
@@ -165,23 +161,23 @@ namespace QuickHide {
 				return appLauncherButton.VisibleInScenes;
 			}
 		}
-		internal bool isThisApp(ApplicationLauncherButton Button) {
+		internal bool isThisApp(ApplicationLauncherButton button) {
 			if (!isActive) {
 				return false;
 			}
-			return appLauncherButton == Button;
+			return appLauncherButton == button;
 		}
-		internal static string GetModName(ApplicationLauncherButton Button) {
-			if (Button == null) {
+		internal static string GetModName(ApplicationLauncherButton button) {
+			if (button == null) {
 				return "None";
 			}
-			return Button.onTrue.Method.Module.Assembly.GetName ().Name;
+			return button.onTrue.Method.Module.Assembly.GetName ().Name;
 		}
-		internal static string GetAppRef(ApplicationLauncherButton Button) {
-			if (Button == null) {
+		internal static string GetAppRef(ApplicationLauncherButton button) {
+			if (button == null) {
 				return "None";
 			}
-			return string.Format("{0} ({1}.{2})", GetModName(Button), Button.onTrue.Method.DeclaringType.FullName, Button.onTrue.Method.Name);
+			return string.Format("{0} ({1}.{2})", GetModName(button), button.onTrue.Method.DeclaringType.FullName, button.onTrue.Method.Name);
 		}
 		internal void SaveCurrentAppScenes() {
 			if (!isActive || isHidden) {
@@ -198,21 +194,21 @@ namespace QuickHide {
 			} else {
 				appLauncherButton.SetTrue (true);
 			}
-			QuickHide.Log ("Toggle the AppLauncher: " + AppRef, true);
+			QuickHide.Log ("Toggle the AppLauncher: " + AppRef, "QMods");
 		}
 		internal void SetTrue(bool force = false) {
 			if (!isActive || isTrue) {
 				return;
 			}
 			appLauncherButton.SetTrue (force);
-			QuickHide.Log ("SetFalse the AppLauncher: " + AppRef, true);
+			QuickHide.Log ("SetFalse the AppLauncher: " + AppRef, "QMods");
 		}
 		internal void SetFalse(bool force = false) {
 			if (!isActive || isFalse) {
 				return;
 			}
 			appLauncherButton.SetFalse (force);
-			QuickHide.Log ("SetFalse the AppLauncher: " + AppRef, true);
+			QuickHide.Log ("SetFalse the AppLauncher: " + AppRef, "QMods");
 		}
 		private void StoreAppScenes() {
 			if (!isActive || !CanBeHide || isHidden) {
@@ -220,21 +216,21 @@ namespace QuickHide {
 			}
 			SaveCurrentAppScenes ();
 			appLauncherButton.VisibleInScenes = ApplicationLauncher.AppScenes.NEVER;
-			QuickHide.Log ("Store the AppLauncher: " + AppRef, true);
+			QuickHide.Log ("Store the AppLauncher: " + AppRef, "QMods");
 		}
 		private void RestoreAppScenes() {
 			if (!isActive || isStored) {
 				return;
 			}
 			appLauncherButton.VisibleInScenes = AppScenesSaved;
-			QuickHide.Log ("Restore the AppLauncher: " + AppRef, true);
+			QuickHide.Log ("Restore the AppLauncher: " + AppRef, "QMods");
 		}
-		internal void Refresh(ApplicationLauncherButton Button) {
-			if (Button == null) {
+		internal void Refresh(ApplicationLauncherButton button) {
+			if (button == null) {
 				return;
 			}
-			appLauncherButton = Button;
-			QuickHide.Log ("Refresh the AppLauncher: " + AppRef, true);
+			appLauncherButton = button;
+			QuickHide.Log ("Refresh the AppLauncher: " + AppRef, "QMods");
 		}
 	}
 }
