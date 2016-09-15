@@ -40,8 +40,9 @@ Delete the QuickHide folder in your KSP/GameData folder.
 
 #### Changelog
 
-v3.05 - 2016.09.15
+v3.10 - 2016.09.15
 * New: Added a right click option on the stocktoolbar to access to the settings window,
+* New: Added stage auto hide,
 * Fix: Corrected the mouse over with scales parameters,
 * Fix: Enhanced the mouse over of the applauncher,
 * Fix: Deleted foreach functions,

@@ -175,7 +175,8 @@ namespace QuickHide {
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (5);
 			GUILayout.BeginHorizontal ();
-			QSettings.Instance.HideAppLauncher = GUILayout.Toggle (QSettings.Instance.HideAppLauncher, "Enable AutoHide on mouse hovering out the Stock ToolBar");
+			QSettings.Instance.HideAppLauncher = GUILayout.Toggle (QSettings.Instance.HideAppLauncher, "Enable AutoHide on mouse hovering out the Stock ToolBar", GUILayout.Width (450));
+			QSettings.Instance.HideStage = GUILayout.Toggle (QSettings.Instance.HideStage, "Enable AutoHide on mouse hovering out the stages", GUILayout.Width (400));
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (5);
 			if (QSettings.Instance.HideAppLauncher) {
@@ -190,7 +191,6 @@ namespace QuickHide {
 			GUILayout.Box ("Mods", GUILayout.Height (30));
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (5);
-
 			scrollPosition = GUILayout.BeginScrollView (scrollPosition, GUILayout.Width (880), GUILayout.Height (300));
 			DrawAppLauncherButtons ();
 			GUILayout.EndScrollView ();
