@@ -24,7 +24,7 @@ namespace QuickHide {
 	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
 	public partial class QStockToolbar : QuickHide { }
 
-	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
+	[KSPAddon(KSPAddon.Startup.AllGameScenes, false)]
 	public partial class QHide : QuickHide { }
 
 	public class QuickHide : MonoBehaviour {
